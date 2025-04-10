@@ -95,7 +95,7 @@ class _BlogListPageState extends State<BlogListPage> {
                                 children: [
                                   IconButton(
                                     onPressed: () async {
-                                      Navigator.push(
+                                      await Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) => EditPost(
@@ -103,6 +103,7 @@ class _BlogListPageState extends State<BlogListPage> {
                                           ),
                                         ),
                                       );
+                                      _getAllPost();
                                     },
                                     icon: Icon(Icons.edit),
                                   ),
@@ -136,8 +137,8 @@ class _BlogListPageState extends State<BlogListPage> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
+        onPressed: () async {
+          await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) {
@@ -145,6 +146,7 @@ class _BlogListPageState extends State<BlogListPage> {
               },
             ),
           );
+          _getAllPost();
         },
       ),
     );

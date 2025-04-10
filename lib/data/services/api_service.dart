@@ -30,8 +30,10 @@ class BlogApiService extends ChangeNotifier {
         'photo': await MultipartFile.fromFile(photo.path),
       });
     }
-    final response = await _dio.post('${UrlConst.post}?title=$title&body=$body',
-        data: formData);
+    final response = await _dio.post(
+      '${UrlConst.post}?title=$title&body=$body',
+      data: formData,
+    );
     return MessageModel.fromJson(response.data);
   }
 

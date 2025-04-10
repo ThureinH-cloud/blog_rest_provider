@@ -31,7 +31,8 @@ class BlogNotifier extends ChangeNotifier {
   Future<void> createPost(
       {required String title, required String body, File? photo}) async {
     try {
-      await _blogApiService.createPost(title: title, body: body, photo: photo);
+      message = await _blogApiService.createPost(
+          title: title, body: body, photo: photo);
       notifyListeners();
     } catch (e) {
       return Future.error(e);

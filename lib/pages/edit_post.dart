@@ -5,7 +5,6 @@ import 'package:blog_rest_api/data/models/post_model.dart';
 import 'package:blog_rest_api/static/url_const.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class EditPost extends StatefulWidget {
@@ -30,7 +29,7 @@ class _EditPostState extends State<EditPost> {
     });
   }
 
-  void postDetails(int id) async {
+  Future<void> postDetails(int id) async {
     try {
       setState(() {
         _isLoading = true;
@@ -55,9 +54,13 @@ class _EditPostState extends State<EditPost> {
         title: const Text('Edit Post'),
       ),
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           if (_isLoading)
-            const Center(child: CircularProgressIndicator.adaptive()),
+            const Center(
+              child: CircularProgressIndicator.adaptive(),
+            ),
           if (_isError) const Center(child: Text('Error')),
           if (!_isLoading && !_isError)
             Consumer<BlogNotifier>(
@@ -87,20 +90,23 @@ class _EditPostState extends State<EditPost> {
                           border: OutlineInputBorder(),
                         ),
                       ),
-                      TextButton(
-                        onPressed: () async {
-                          ImagePicker picker = ImagePicker();
-                          XFile? xfile = await picker.pickImage(
-                            source: ImageSource.gallery,
-                          );
-                          if (xfile != null) {
-                            setState(() {
-                              file = File(xfile.path);
-                              postModel.photo = null;
-                            });
-                          }
-                        },
-                        child: Text("Choose Image (Optional)"),
+                      // TextButton(
+                      //   onPressed: () async {
+                      //     ImagePicker picker = ImagePicker();
+                      //     XFile? xfile = await picker.pickImage(
+                      //       source: ImageSource.gallery,
+                      //     );
+                      //     if (xfile != null) {
+                      //       setState(() {
+                      //         file = File(xfile.path);
+                      //         postModel.photo = null;
+                      //       });
+                      //     }
+                      //   },
+                      //   child: Text("Choose Image (Optional)"),
+                      // ),
+                      SizedBox(
+                        height: 12,
                       ),
                       if (postModel.photo != null)
                         CachedNetworkImage(
@@ -127,12 +133,16 @@ class _EditPostState extends State<EditPost> {
                               ),
                             );
                           }
+                          setState(() {
+                            _isLoading = true;
+                          });
                           await notifier.updatePost(
                             id: postModel.id!,
                             title: title,
                             body: body,
                             photo: file,
                           );
+                          await postDetails(postModel.id!);
                         },
                         child: const Text('Update'),
                       ),
@@ -140,9 +150,19 @@ class _EditPostState extends State<EditPost> {
                   ),
                 );
               },
-            )
+            ),
+          Spacer()
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _titleController.dispose();
+    _bodyController.dispose();
+    file = null;
   }
 }
